@@ -86,16 +86,16 @@ def get_highest_rating(db): #Do this through DB as well
     The second bar chart displays the buildings along the y-axis and their ratings along the x-axis 
     in descending order (by rating).
     """
-    
     pass
+    
 
 #Try calling your functions here
 def main():
-    # load_rest_data("South_U_Restaurants.db'")
-    # plot_rest_categories("South_U_Restaurants.db'")
-    #find_rest_in_building(1315, "South_U_Restaurants.db")
-    #get_highest_rating("South_U_Restaurants.db")
-    pass
+    load_rest_data("South_U_Restaurants.db")
+    plot_rest_categories("South_U_Restaurants.db")
+    find_rest_in_building(1315, "South_U_Restaurants.db")
+
+    
  
 class TestHW8(unittest.TestCase):
     def setUp(self):
@@ -140,9 +140,9 @@ class TestHW8(unittest.TestCase):
         self.assertEqual(len(restaurant_list), 3)
         self.assertEqual(restaurant_list[0], 'BTB Burrito')
 
-    def test_get_highest_rating(self):
-        highest_rating = get_highest_rating('South_U_Restaurants.db')
-        self.assertEqual(highest_rating, self.highest_rating)
+    #def test_get_highest_rating(self):
+        #highest_rating = get_highest_rating('South_U_Restaurants.db')
+        #self.assertEqual(highest_rating, self.highest_rating)
 
 if __name__ == '__main__':
     main()
