@@ -19,7 +19,7 @@ def load_rest_data(db):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db)
     cur = conn.cursor()
-    cur.execute("SELECT restaurants.name, restaurants.category_id, restaurants.building_id, restaurants.rating, buildings.building, categories.category FROM restaurants JOIN categories ON restaurants.category_id = categories.id JOIN buildings ON restaurants.building_id = buildings.id")
+    cur.execute("SELECT restaurants.name, restaurants.category_id, restaurants.building_id, restaurants.rating, buildings.building, categories.category FROM restaurants LEFT JOIN categories ON restaurants.category_id = categories.id LEFT JOIN buildings ON restaurants.building_id = buildings.id")
     results = cur.fetchall()
     for data in results:
         resturants_dict[data[0]] = {'category': data[5], 'building': data[4], 'rating': data[3]}
@@ -32,7 +32,30 @@ def plot_rest_categories(db):
     restaurant categories and the values should be the number of restaurants in each category. The function should
     also create a bar chart with restaurant categories and the count of number of restaurants in each category.
     """
-    pass
+    
+    categories = {}
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db)
+    cur = conn.cursor()
+    cur.execute("SELECT categories.category, COUNT(restaurants.name) AS c FROM categories JOIN restaurants ON restaurants.category_id = categories.id GROUP BY restaurants.category_id ORDER BY c DESC")
+    results = cur.fetchall()
+    rest = []
+    nums = []
+    for row in results:
+        categories[row[0]] = row[1]
+        rest.append(row[0])
+        nums.append(row[1])
+
+
+    # Create bar chart
+    fig, ax = plt.subplots(figsize = (15,5))
+    ax.barh(rest,nums)
+    ax.invert_yaxis()
+    ax.invert_yaxis()
+    ax.set(ylabel='Restaurant Categories', xlabel='Number of Restaurants', title='Types of Restaurants on South U Ave')
+    plt.show()
+    return categories
+
 
 def find_rest_in_building(building_num, db):
     '''
@@ -40,7 +63,16 @@ def find_rest_in_building(building_num, db):
     restaurant names. You need to find all the restaurant names which are in the specific building. The restaurants 
     should be sorted by their rating from highest to lowest.
     '''
-    pass
+
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    cur.execute("SELECT restaurants.name FROM restaurants JOIN buildings ON restaurants.building_id = buildings.id WHERE buildings.building = ? ORDER BY restaurants.rating DESC", (building_num,))
+    results = cur.fetchall()
+    rest_names = []
+    for row in results:
+        rest_names.append(row[0])
+    return rest_names
+
 
 #EXTRA CREDIT
 def get_highest_rating(db): #Do this through DB as well
@@ -54,12 +86,17 @@ def get_highest_rating(db): #Do this through DB as well
     The second bar chart displays the buildings along the y-axis and their ratings along the x-axis 
     in descending order (by rating).
     """
+    
     pass
 
 #Try calling your functions here
 def main():
+    # load_rest_data("South_U_Restaurants.db'")
+    # plot_rest_categories("South_U_Restaurants.db'")
+    #find_rest_in_building(1315, "South_U_Restaurants.db")
+    #get_highest_rating("South_U_Restaurants.db")
     pass
-
+ 
 class TestHW8(unittest.TestCase):
     def setUp(self):
         self.rest_dict = {
